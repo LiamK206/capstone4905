@@ -6,13 +6,14 @@ import math
 from enum import Enum
 import self as self
 from grip import GripPipeline
-#from playsound import playsound
-#from pygame import mixer
+import pygame
 from picamera.array import PiRGBArray
 from picamera import PiCamera
 
 # Pipeline Constructor
 pipeline = GripPipeline()
+pygame.mixer.init()
+pygame.mixer.music.load('beep-01b.mp3')
 
 # Constructing Camera Object
 camera = PiCamera()
@@ -51,9 +52,11 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     cv2.imshow("Frame", frame)
     
     # play noise if red light detected
-    if len(contour_data) > 1:
+    if len(contour_data) > 0:
         print("beep")
-        #playsound("beep-03.wav")
+        pygame.mixer.music.play()
+        while pygame.mixer.music.get_busy() == True:
+            continue
     
     # clear the stream in preparation for the next frame
     rawCapture.truncate(0)
